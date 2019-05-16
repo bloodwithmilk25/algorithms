@@ -112,6 +112,16 @@ checked = []
 #
 # checked = []
 
+
+"""
+1. While there is unchecked nodes
+2. Take node with lowest cost
+3. Update costs of it's neighbours
+4. If neighboir cost was updated then update it's parent
+5. Mark node as checked
+6. Step one
+"""
+
 def find_lowest_cots_node(costs):
     lowest_cost = float('inf')
     lowest_cost_node = None
