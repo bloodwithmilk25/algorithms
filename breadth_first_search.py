@@ -23,9 +23,11 @@ def search(name):
         person = search_queue.popleft()
         # Only search this person if you haven't already searched them.
         if person not in searched:
+            # check if it's the right node
             if person_is_seller(person):
                 print(person + " is a mango seller!")
                 return True
+            # if not, check it's adjacent nodes
             else:
                 search_queue += graph[person]
                 # Marks this person as searched
