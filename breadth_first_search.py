@@ -1,5 +1,16 @@
 from collections import deque
 
+"""
+1. Create queue with nodes that need to be cheched
+2. Take next node out of the queue
+3. Check if it's the node we're looking for.
+4.A. YES - Done
+4.B. NO - Mark node as checked. Add it's adjancent nodes to the queue.
+5. Go to step 2
+6. If queue is empty, search failed.
+"""
+
+
 graph = {}
 graph["you"] = ["alice", "bob", "claire"]
 graph["bob"] = ["anuj", "peggy"]
