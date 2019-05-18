@@ -1,19 +1,19 @@
-def findSmallest(arr):
-  # Stores the smallest value
-  smallest = arr[0]
-  # Stores the index of the smallest value
-  smallest_index = 0
-  for i in range(1, len(arr)):
-    if arr[i] < smallest:
-      smallest_index = i
-      smallest = arr[i]      
-  return smallest_index
+def find_smallest(arr):
+    smallest = arr[0]
+    smallest_i = 0
+    for i in range(len(arr)):
+        if arr[i] < smallest:
+            smallest = arr[i]
+            smallest_i = i
 
-# Sort array
-def selectionSort(arr):
-  newArr = []
-  for i in range(len(arr)):
-      # Finds the smallest element in the array and adds it to the new array
-      smallest = findSmallest(arr)
-      newArr.append(arr.pop(smallest))
-  return newArr
+    return smallest_i
+
+def selection_sort(arr):
+    for i in range(len(arr)):
+        smallest = find_smallest(arr[i:])
+        arr.insert(i, arr.pop(smallest+i))
+    return arr
+
+
+a = [5,7,2,9,11,5,64,31,0,1,3]
+print(selection_sort(a))
