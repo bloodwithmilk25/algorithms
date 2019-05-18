@@ -10,8 +10,9 @@ def dfs_helper(graph, node, checked):
         return
     if node_we_look_for(node):
         return node
-
+    # mark node as searched
     checked.append(node)
+    # check next adjacent node
     for n in graph[node]:
         if n not in checked:
             return dfs_helper(graph, n, checked)
