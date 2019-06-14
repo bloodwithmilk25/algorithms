@@ -1,10 +1,10 @@
 cache = {}
-def fib(n):
+def _fib(n):
   if n not in cache:
-    cache[n] = _fib(n)
+    cache[n] = fib(n)
   return cache[n]
 
-def _fib(n):
+def fib(n):
   if n < 2:
     return n
-  return fib(n-1) + fib(n-2)
+  return _fib(n-1) + _fib(n-2)
