@@ -1,41 +1,61 @@
-class Element(object):
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+from __future__ import annotations
+from dataclasses import dataclass
+from typing import Any
 
-class LinkedList(object):
-    def __init__(self, head=None):
-        self.head = head
 
-    def append(self, new_element):
-        current = self.head
-        if self.head:
-            while current.next:
-                current = current.next
-            current.next = new_element
-        else:
-            self.head = new_element
-  
-   # stack functionality
-    def insert_first(self, new_element):
-        new_element.next = self.head
-        self.head = new_element
+class Stack:
+    def __init__(self):
+        self.length = 0
+        self._storage = list()
 
-    def delete_first(self):
-        if self.head:
-            deleted_element = self.head
-            temp = deleted_element.next
-            self.head = temp
-            return deleted_element
-        else:
-            return None
-
-class Stack(object):
-    def __init__(self,top=None):
-        self.ll = LinkedList(top)
-
-    def push(self, new_element):
-        self.ll.insert_first(new_element)
+    def peek(self):
+        return self._storage[-1]
 
     def pop(self):
-        return self.ll.delete_first()
+        self.length -= 1
+        return self._storage.pop()
+
+    def push(self, value):
+        self._storage.append(value)
+        self.length += 1
+
+
+# Now let's implement Stack on top of Linked list
+
+@dataclass
+class Node:
+    value: Any
+    next: Node | None = None
+
+
+class StackLL:
+    def __init__(self):
+        self.top: Node = None
+        self.bottom: Node = None
+        self.length = 0
+
+    def push(self, value):
+        new_node = Node(value=value)
+        if self.length == 0:
+            self.top = new_node
+            self.bottom = new_node
+        else:
+            new_node.next = self.top
+            self.top = new_node
+        self.length += 1
+
+    def pop(self):
+        if self.length == 0:
+            return
+
+        popped_node = self.top
+        self.top = self.top.next
+        self.length -= 1
+
+        if popped_node == self.bottom:
+            self.bottom = None
+
+        return popped_node.value
+
+    def peek(self):
+        return self.top.value
