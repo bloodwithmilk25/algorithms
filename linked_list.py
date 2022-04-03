@@ -1,55 +1,101 @@
-class Element(object):
-    def __init__(self, value):
-        self.value = value
-        self.next = None
+from __future__ import annotations
+from dataclasses import dataclass
+from typing import Any
 
-class LinkedList(object):
-    def __init__(self, head=None):
-        self.head = head
 
-    def append(self, new_element):
-        current = self.head
-        if self.head:
-            while current.next:
-                current = current.next
-            current.next = new_element
-        else:
-            self.head = new_element
+@dataclass
+class Node:
+    value: Any
+    next: Node | None = None
 
-    def get_position(self, position):
-        counter = 1
-        current = self.head
-        if position < 1:
-            return None
-        while current and counter <= position:
-            if counter == position:
-                return current
-            current = current.next
-            counter += 1
-        return None
+    def __str__(self):
+        return self.value
 
-    def insert(self, new_element, position):
-        counter = 1
-        current = self.head
-        if position > 1:
-            while current and counter < position:
-                if counter == position - 1:
-                    new_element.next = current.next
-                    current.next = new_element
-                current = current.next
-                counter += 1
-        elif position == 1:
-            new_element.next = self.head
-            self.head = new_element
+    def __repr__(self):
+        return self.__str__()
 
-    def delete(self, value):
-        current = self.head
-        previous = None
-        while current.value != value and current.next:
-            previous = current
-            current = current.next
-        if current.value == value:
-            if previous:
-                previous.next = current.next
-            else:
-                self.head = current.next
+
+class LinkedList:
+    def __init__(self, *values: Any):
+        self.length = 0
+        if len(values) == 1:
+            node = Node(values[0])
+            self.head = node
+            self.tail = node
+            self.length = 1
+            return
+
+        prev_node = None
+        for i, value in enumerate(values):
+            new_node = self._create_node(value)
+            if i == 0:
+                self.head = new_node
+                prev_node = self.head
+                self.length += 1
+                continue
+
+            prev_node.next = new_node
+            prev_node = new_node
+            self.length += 1
+
+        self.tail = prev_node
+
+    def append(self, value):
+        new_node = self._create_node(value)
+        self.tail.next = new_node
+        self.tail = new_node
+        self.length += 1
+
+    def prepend(self, value):
+        new_node = self._create_node(value, self.head)
+        self.head = new_node
+        self.length += 1
+
+    def insert(self, index, value):
+        if index >= self.length:
+            return self.append(value)
+        if index == 0:
+            return self.prepend(value)
+
+        for i, node in enumerate(self):
+            if i == index - 1:
+                next_node = node.next
+                new_node = self._create_node(value, next_node)
+                node.next = new_node
+                self.length += 1
+                return
+
+    def delete(self, index):
+        if index == 0:
+            self.head = self.head.next
+            self.length -= 1
+            return
+
+        if index >= self.length:
+            return
+
+        for i, node in enumerate(self):
+            if i == index - 1:
+                next_node = node.next
+                node.next = next_node.next if next_node else None
+                if node.next is None:
+                    self.tail = node
+
+                self.length -= 1
+                return
+
+    @staticmethod
+    def _create_node(value, next_: Node | None = None):
+        return Node(value=value, next=next_)
+
+    def __str__(self):
+        return f'Length: {self.length}; {"->".join(n.value for n in self)}'
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __iter__(self):
+        current_node = self.head
+        while current_node:
+            yield current_node
+            current_node = current_node.next
