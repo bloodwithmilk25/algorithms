@@ -9,6 +9,7 @@ from typing import Any, List
 class Node:
     value: Any
     next: Node | None = None
+    prev: Node | None = None
 
     def __str__(self):
         return self.value
@@ -17,7 +18,7 @@ class Node:
         return self.__str__()
 
 
-class LinkedList:
+class DoublyLinkedList:
     def __init__(self, values: List[Any] = None):
         self.length = 0
         if not values:
@@ -40,19 +41,21 @@ class LinkedList:
                 continue
 
             prev_node.next = new_node
+            new_node.prev = prev_node
             prev_node = new_node
             self.length += 1
 
         self.tail = prev_node
 
     def append(self, value):
-        new_node = self._create_node(value)
+        new_node = self._create_node(value, prev=self.tail)
         self.tail.next = new_node
         self.tail = new_node
         self.length += 1
 
     def prepend(self, value):
         new_node = self._create_node(value, self.head)
+        self.head.prev = new_node
         self.head = new_node
         self.length += 1
 
@@ -65,7 +68,8 @@ class LinkedList:
         for i, node in enumerate(self):
             if i == index - 1:
                 next_node = node.next
-                new_node = self._create_node(value, next_node)
+                new_node = self._create_node(value, next_node, prev=node)
+                next_node.prev = new_node
                 node.next = new_node
                 self.length += 1
                 return
@@ -83,57 +87,38 @@ class LinkedList:
             if i == index - 1:
                 next_node = node.next
                 node.next = next_node.next if next_node else None
+                if node.next:
+                    node.next.prev = node
+
                 if node.next is None:
                     self.tail = node
 
                 self.length -= 1
                 return
 
-    def reverse(self, inplace=False) -> LinkedList:
-        if inplace:
-            return self.reverse_inplace()
-
+    def reverse(self) -> DoublyLinkedList:
         if self.length == 0:
-            return LinkedList()
+            return DoublyLinkedList()
 
-        reversed_ll = LinkedList()
+        reversed_ll = DoublyLinkedList()
+        for i, node in enumerate(reversed(self)):
+            new_node = copy(node)
+            new_node.next = None
+            new_node.prev = None
 
-        prev_node = None
-        for i, node in enumerate(self):
-            new_node = self._create_node(node.value)
             if i == 0:
-                reversed_ll.tail = new_node
-                prev_node = reversed_ll.tail
                 reversed_ll.head = new_node
+                reversed_ll.tail = new_node
                 reversed_ll.length += 1
                 continue
 
-            new_node.next = prev_node
-            prev_node = new_node
-            reversed_ll.length += 1
+            reversed_ll.append(node.value)
 
-        reversed_ll.head = prev_node
         return reversed_ll
 
-    def reverse_inplace(self) -> LinkedList:
-        if self.length <= 1:
-            return
-
-        first = self.head
-        second = self.head.next
-        self.tail = self.head
-        while second:
-            temp = second.next
-            second.next = first
-            first = second
-            second = temp
-
-        self.head.next = None
-        self.head = first
-
     @staticmethod
-    def _create_node(value, next_: Node | None = None):
-        return Node(value=value, next=next_)
+    def _create_node(value, next_: Node | None = None, prev: Node | None = None):
+        return Node(value=value, next=next_, prev=prev)
 
     def __str__(self):
         return f'Length: {self.length}; {"->".join(n.value for n in self)}'
@@ -146,3 +131,9 @@ class LinkedList:
         while current_node:
             yield current_node
             current_node = current_node.next
+
+    def __reversed__(self):
+        current_node = self.tail
+        while current_node:
+            yield current_node
+            current_node = current_node.prev
