@@ -1,11 +1,17 @@
-from random import choice
-def qs(arr):
+from typing import List
+
+
+def quicksort(arr: List) -> List:
+    """
+    >>> array = [5, 7, 2, 9, 11, 5, 64, 31, 0, 1, 3]
+    >>> quicksort(array)
+    [0, 1, 2, 3, 5, 5, 7, 9, 11, 31, 64]
+    """
     if len(arr) < 2:
         return arr
-    piv = arr.pop(arr.index(choice(arr))) # chose random element prom arr and pop it
-    less = [i for i in arr if i <= piv]
-    greater = [i for i in arr if i > piv]
-    return qs(less) + [piv] + qs(greater)
-    
-    
-print(qs([7,13,7,89,1,2,3,9,687,4,548,79,23,1,0,0,-1,12,3]))
+
+    piv = arr.pop(len(arr) // 2)
+    less = [n for n in arr if n <= piv]
+    greater = [n for n in arr if n > piv]
+
+    return quicksort(less) + [piv] + quicksort(greater)
