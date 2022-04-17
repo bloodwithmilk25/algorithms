@@ -9,6 +9,6 @@ def bubble_sort(arr: List) -> None:
     [0, 1, 2, 3, 5, 5, 7, 9, 11, 31, 64]
     """
     for i in range(len(arr) - 1):
-        for n in range(len(arr) - 1 - i):
-            if arr[n] > arr[n + 1]:
-                arr[n], arr[n + 1] = arr[n + 1], arr[n]
+        for j in range(len(arr) - 1 - i):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]

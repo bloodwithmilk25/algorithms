@@ -11,6 +11,7 @@ def quick_sort(arr: List) -> List:
         return arr
 
     piv = arr.pop(len(arr) // 2)
-    less = [n for n in arr if n <= piv]
-    greater = [n for n in arr if n > piv]
-    return quick_sort(less) + [piv] + quick_sort(greater)
+    right = [n for n in arr if n >= piv]
+    left = [n for n in arr if n < piv]
+
+    return quick_sort(left) + [piv] + quick_sort(right)
