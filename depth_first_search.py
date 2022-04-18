@@ -1,33 +1,23 @@
-def node_we_look_for(node):
-    return node[-1] == "y"
+from queue import LifoQueue
+
+from binary_search_tree import plant_tree, BinarySearchTree, Node
+
+tree = plant_tree()
 
 
-def dfs(graph, node):
-    return dfs_helper(graph, node, [])
+def dfs(tree: BinarySearchTree, value):
+    """
+    preorder dfs
+    """
+    nodes_stack = LifoQueue()
+    nodes_stack.put(tree.root)
+    while not nodes_stack.empty():
+        current_node = nodes_stack.get()
+        print(current_node.value)
+        if current_node.value == value:
+            return value
 
-def dfs_helper(graph, node, checked):
-    if not node:
-        return
-    if node_we_look_for(node):
-        return node
-    # mark node as searched
-    checked.append(node)
-    # check next adjacent node
-    for n in graph[node]:
-        if n not in checked:
-            return dfs_helper(graph, n, checked)
-
-
-
-graph = {}
-graph["you"] = ["alice", "anatoly", "claire"]
-graph["bob"] = ["anuj", "peggy"]
-graph["alice"] = ["peggan"]
-graph["claire"] = ["thom", "jonny"]
-graph["anuj"] = []
-graph["peggan"] = ['thom']
-graph["thom"] = ['biggy']
-graph["jonny"] = []
-
-# Although anatoly is closer, we should find biggy first. "you" -> "alice" -> "peggan" => "thom" => "biggy"
-print(dfs(graph, 'you'))
+        if current_node.right:
+            nodes_stack.put(current_node.right)
+        if current_node.left:
+            nodes_stack.put(current_node.left)

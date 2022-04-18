@@ -1,5 +1,7 @@
 from collections import deque
 
+from binary_search_tree import plant_tree, BinarySearchTree, Node
+
 """
 1. Create queue with nodes that need to be cheched
 2. Take next node out of the queue
@@ -11,38 +13,45 @@ from collections import deque
 """
 
 
-graph = {}
-graph["you"] = ["alice", "bob", "claire"]
-graph["bob"] = ["anuj", "peggy"]
-graph["alice"] = ["peggy"]
-graph["claire"] = ["thom", "jonny"]
-graph["anuj"] = []
-graph["peggy"] = []
-graph["thom"] = []
-graph["jonny"] = []
+tree = plant_tree()
 
-# any search function
-def person_is_seller(name):
-      return name[-1] == 'm'
 
-def search(name):
-    search_queue = deque()
-    search_queue += graph[name]
-    # This array is how you keep track of which people you've searched before.
-    searched = []
-    while search_queue:
-        person = search_queue.popleft()
-        # Only search this person if you haven't already searched them.
-        if person not in searched:
-            # check if it's the right node
-            if person_is_seller(person):
-                print(person + " is a mango seller!")
-                return True
-            # if not, check it's adjacent nodes
-            else:
-                search_queue += graph[person]
-                # Marks this person as searched
-                searched.append(person)
-    return False
+def bfs(tree: BinarySearchTree, value):
+    nodes_queue = deque()
+    nodes_queue.append(tree.root)
 
-search("you")
+    while nodes_queue:
+        current_node: Node = nodes_queue.popleft()
+        print(current_node.value)
+        if current_node.value == value:
+            return current_node
+
+        if current_node.left:
+            nodes_queue.append(current_node.left)
+        if current_node.right:
+            nodes_queue.append(current_node.right)
+
+
+def bfs_recursive(queue: deque, value):
+    """
+    >>> initial_queue = deque(); initial_queue.append(tree.root)
+    >>> bfs_recursive(initial_queue, 170)
+    170
+    >>> bfs_recursive(initial_queue, 1512)
+
+    """
+    if len(queue) == 0:
+        return
+
+    current_node = queue.popleft()
+    if current_node.value == value:
+        return current_node
+
+    if current_node.left:
+        queue.append(current_node.left)
+    if current_node.right:
+        queue.append(current_node.right)
+
+    return bfs_recursive(queue, value)
+
+
