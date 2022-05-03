@@ -21,8 +21,7 @@ def bfs(tree: BinarySearchTree, value):
     nodes_queue.append(tree.root)
 
     while nodes_queue:
-        current_node: Node = nodes_queue.popleft()
-        print(current_node.value)
+        current_node = nodes_queue.popleft()
         if current_node.value == value:
             return current_node
 
@@ -53,5 +52,3 @@ def bfs_recursive(queue: deque, value):
         queue.append(current_node.right)
 
     return bfs_recursive(queue, value)
-
-
